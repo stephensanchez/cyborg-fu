@@ -4,11 +4,12 @@
 
 import pygame
 import random
-from pygame.locals import *
 import os
-from sprites import *
-from assassin import *
+from pygame.locals import *
+from StageThree import *
+from creatures import *
 from main import *
+
 
 dokill = 1
 dontkill = 0
@@ -16,7 +17,7 @@ SCREENRECT = Rect(0, 0, 800, 600)
 OGRE_RELOAD = 80
 OGRE_ODDS = 50
 
-def ogres(hero, winstyle = 0):
+def StageTwo(hero, winstyle = 0):
         
         # Initialize screen
         pygame.init()
@@ -283,7 +284,7 @@ def ogres(hero, winstyle = 0):
                                         ogres.empty()
                                         Alives = 2
                                         Blives = 2
-                                        assassin(hero)
+                                        StageThree(hero)
 
                 ogres.clear(screen, background)
                 ogres.update()

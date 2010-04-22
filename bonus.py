@@ -6,8 +6,8 @@ import pygame
 import random
 from pygame.locals import *
 import os
-from sprites import *
-from assassin import *
+from creatures import *
+from StageThree import *
 from main import *
 
 dokill = 1

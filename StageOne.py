@@ -4,11 +4,10 @@
 
 import pygame
 import random
+from StageTwo import *
 from pygame.locals import *
 from creatures import *
-from aweapons import *
-from ogre import *
-from assassin import *
+from weapons import *
 from main import *
 
 dokill = 1
@@ -17,7 +16,7 @@ SCREENRECT = Rect(0, 0, 800, 600)
 RUNT_RELOAD = 80
 RUNT_ODDS = 50
                 
-def runts(hero, winstyle = 0):
+def StageOne(hero, winstyle = 0):
         
         # Initialize screen
         pygame.init()
@@ -346,7 +345,7 @@ def runts(hero, winstyle = 0):
                                         Clives = 2
                                         Dlives = 2
                                         Elives = 2
-                                        ogres(hero)
+                                        StageTwo(hero)
                                         
                 runties.clear(screen, background)
                 runties.update()

@@ -6,8 +6,8 @@ import pygame
 import random
 from pygame.locals import *
 import os
-from sprites import *
-from aweapons import *
+from creatures import *
+from weapons import *
 from main import *
 
 dokill = 1
@@ -17,7 +17,7 @@ SCORE = 0      #Score update
 SHADOW_SPAWN = 200
 SHADOW_ODDS = 100
 
-def assassin(hero, winstyle = 0):
+def StageThree(hero, winstyle = 0):
 
         # Initialize screen
         pygame.init()
@@ -279,7 +279,7 @@ def assassin(hero, winstyle = 0):
                 if pygame.sprite.groupcollide(blocks, gassassin, dontkill, dontkill):
                         middle.collision(assassin)
 
-                if assassin.life < 0:
+                if assassin.life <= 0:
                         if CHECKMARK1 == 0:
                                 msg = "Professor: Incredible, you defeated 'The Assassin'! Yippie!"
                                 newText = Text(msg)

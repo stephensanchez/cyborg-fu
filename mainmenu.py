@@ -5,7 +5,7 @@
 import pygame
 import random
 from pygame.locals import *
-from runt import *
+from StageOne import *
 
 dokill = 1
 dontkill = 0
@@ -147,7 +147,7 @@ def mainmenu(winstyle = 0):
                                                 hero = "tesi"
                                         if choice == "gun":
                                                 hero = "gunner"
-                                        runts(hero)
+                                        StageOne(hero)
                                                 
 
                         if CHECKMARK == 6:

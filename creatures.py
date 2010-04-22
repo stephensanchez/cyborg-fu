@@ -5,7 +5,7 @@ try:
         import os
         import pygame
         import random
-        from ogre import *
+        from StageTwo import *
         from weapons import *
         
 except ImportError, err:

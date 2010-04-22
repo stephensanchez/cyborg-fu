@@ -4,7 +4,7 @@ try:
         import os
         import pygame
         import random
-        from sprites import *
+        from creatures import *
 
 except ImportError, err:
         print "Module not found: %s" % (err)

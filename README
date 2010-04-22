@@ -1,0 +1,10 @@
+Author: Steve Sanchez
+
+Introduction:
+This game was written as a College Assignment for DTU. After leaving it alone
+for quite some time, I decided to revisit the terrible code I had once been
+proud of, and try to improve upon it.
+
+Dependencies:
+This project requires the pygame library. In order to run Cyborg-Fu, you must
+download pygame.
