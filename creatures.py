@@ -5,8 +5,14 @@ try:
         import os
         import pygame
         import random
+        from Blood import Blood
+        from Club import Club
+        from Blade import Blade
+        from ThrownBlade import ThrownBlade
+        from PowerShot import PowerShot
+        from Gun import Gun
+        from Shot import Shot
         from StageTwo import *
-        from weapons import *
         
 except ImportError, err:
         print "Module not found: %s" % (err)
@@ -300,11 +306,11 @@ class SuperSprite(pygame.sprite.Sprite):
                 if self.mana > 19:
                         self.mana = self.mana - 20
                         if self.facing == "right" or self.facing == "left":
-                                firstShot = Pshot(self.rect.midtop, self.facing)
-                                secondShot = Pshot(self.rect.midbottom, self.facing)
+                                firstShot = PowerShot(self.rect.midtop, self.facing)
+                                secondShot = PowerShot(self.rect.midbottom, self.facing)
                         if self.facing == "up" or self.facing == "down":
-                                firstShot = Pshot(self.rect.midleft, self.facing)
-                                secondShot = Pshot(self.rect.midright, self.facing)
+                                firstShot = PowerShot(self.rect.midleft, self.facing)
+                                secondShot = PowerShot(self.rect.midright, self.facing)
                         shotgroup.add(firstShot)
                         shotgroup.add(secondShot)
                             
