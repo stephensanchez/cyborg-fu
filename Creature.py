@@ -1,37 +1,17 @@
-#RPG objects
-#Starting with a hero and a monster
+import os
+import pygame
+import random
+from Blood import Blood
+from Club import Club
+from Blade import Blade
+from ThrownBlade import ThrownBlade
+from PowerShot import PowerShot
+from Gun import Gun
+from Shot import Shot
+from DisplayObject import load_png
+from StageTwo import *
 
-try:
-        import os
-        import pygame
-        import random
-        from Blood import Blood
-        from Club import Club
-        from Blade import Blade
-        from ThrownBlade import ThrownBlade
-        from PowerShot import PowerShot
-        from Gun import Gun
-        from Shot import Shot
-        from StageTwo import *
-        
-except ImportError, err:
-        print "Module not found: %s" % (err)
-        sys.exit(2)
-
-def load_png(name):
-    """ Load image and return image object"""
-    fullname = os.path.join('data', name)
-    try:
-            image = pygame.image.load(fullname)
-            if image.get_alpha() is None:
-                    image = image.convert()
-            else:
-                    image = image.convert_alpha()
-    except pygame.error, message:
-             print 'Cannot load image:', fullname
-    return image, image.get_rect()
-
-class SuperSprite(pygame.sprite.Sprite):
+class Creature(pygame.sprite.Sprite):
         """This is the definition of all sprites,
         common traits for one and all"""
         def __init__(self, nature, spawn, speed, life, state, graphic, attack):
@@ -313,124 +293,3 @@ class SuperSprite(pygame.sprite.Sprite):
                                 secondShot = PowerShot(self.rect.midright, self.facing)
                         shotgroup.add(firstShot)
                         shotgroup.add(secondShot)
-                            
-
-class Runt(SuperSprite):
-        """Blind wandering little green monster """
-        def __init__(self, spawn):
-                pygame.sprite.Sprite.__init__(self)
-                self.facing = "right"
-                self.nature = "runt"
-                self.speed = [1,1]
-                self.life = 100
-                self.state = "still"
-                self.graphic = "runt.png"
-                self.counter = 100
-                self.spawn = spawn
-                self.image, self.rect = load_png(self.graphic)
-                screen = pygame.display.get_surface()
-                self.area = screen.get_rect()
-                self.reinit()
-
-class Tesi(SuperSprite):
-        """Double Bladed Swordsman """
-        def __init__(self, attack):
-                pygame.sprite.Sprite.__init__(self)
-                self.facing = "right"
-                self.nature = "tesi"
-                self.speed = [3,3]
-                self.life = 300
-                self.state = "still"
-                self.graphic = "tesi.png"
-                self.counter = 100
-                self.spawn = [650, 550]
-                self.attack = attack
-                #Determines whether the user is pulling the mana.
-                self.pull = 0
-                self.mana = 0
-                self.healing = 0
-                self.exp = 0
-                self.image, self.rect = load_png(self.graphic)
-                screen = pygame.display.get_surface()
-                self.area = screen.get_rect()
-                self.reinit()
-
-class Hero(SuperSprite):
-        """Cowboy-guy with a gun. Fancy shmancy (And my first hero. I'm proud) """
-        def __init__(self, attack):
-                pygame.sprite.Sprite.__init__(self)
-                self.facing = "right"
-                self.nature = "gunner"
-                self.speed = [3,3]
-                self.life = 100
-                self.state = "still"
-                self.graphic = "hero.png"
-                self.counter = 100
-                self.spawn = [650, 550]
-                self.attack = attack
-                self.mana = 0
-                #Keeps the score, in all hopes.
-                self.exp = 0
-                self.image, self.rect = load_png(self.graphic)
-                screen = pygame.display.get_surface()
-                self.area = screen.get_rect()
-                self.reinit()
-                
-class Ogre(SuperSprite):
-        """Big slow strong ogre, should seek the player, and have an attack"""
-        def __init__(self, spawn, attack):
-                pygame.sprite.Sprite.__init__(self)
-                self.facing = "right"
-                self.nature = "ogre"
-                self.speed = [1,1]
-                self.life = 500
-                self.state = "still"
-                self.graphic = "ogre.png"
-                self.counter = 10
-                self.clubcounter = 5
-                self.attack = attack
-                self.spawn = spawn
-                self.image, self.rect = load_png(self.graphic)
-                screen = pygame.display.get_surface()
-                self.area = screen.get_rect()
-                self.reinit()
-
-class Assassin(SuperSprite):
-        """Tough Boss character that'll shoot down the hero"""
-        def __init__(self, spawn, attack):
-                pygame.sprite.Sprite.__init__(self)
-                self.facing = "right"
-                self.nature = "assassin"
-                self.speed = [1,1]
-                self.life = 400
-                self.state = "still"
-                self.graphic = "assassin.png"
-                self.counter = 50
-                self.spawn = spawn
-                self.shotcounter = 10
-                self.attack = attack
-                self.image, self.rect = load_png(self.graphic)
-                screen = pygame.display.get_surface()
-                self.area = screen.get_rect()
-                self.reinit()
-                
-class Shadow(SuperSprite):
-        """The assassin should spawn these to throw off the player"""
-        def __init__(self, spawn, attack, facing, running):
-                pygame.sprite.Sprite.__init__(self)
-                self.facing = facing
-                self.nature = "assassin"
-                self.speed = [1,2]
-                self.life = 1
-                self.state = "whatever"
-                #move with the assassin
-                self.movepos = running
-                self.graphic = "assassin.png"
-                self.counter = 50
-                self.spawn = spawn
-                self.shotcounter = 50
-                self.attack = attack
-                self.image, self.rect = load_png(self.graphic)
-                screen = pygame.display.get_surface()
-                self.area = screen.get_rect()
-                self.reinit()

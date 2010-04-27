@@ -7,7 +7,12 @@ import random
 import os
 from pygame.locals import *
 from StageThree import *
-from creatures import *
+from Ogre import Ogre
+from Tesi import Tesi
+from Hero import Hero
+from Creature import Creature
+from Shot import Shot
+from PowerShot import PowerShot
 from main import *
 
 
@@ -45,7 +50,7 @@ def StageTwo(hero, winstyle = 0):
         scoresprite = pygame.sprite.RenderPlain(score)
         
 
-        prof = SuperSprite("prof", [740, 30], [1, 1], [10], "still", "prof.png", "nil")
+        prof = Creature("prof", [740, 30], [1, 1], [10], "still", "prof.png", "nil")
         Ogre([100, 100], clubs)
         
         #Text
@@ -80,9 +85,9 @@ def StageTwo(hero, winstyle = 0):
         CHECKMARK3 = 0
         
         #Default groups for each sprite class
-        SuperSprite.containers = sprites
+        Creature.containers = sprites
         Shot.containers = shots
-        Pshot.containers = pshots
+        PowerShot.containers = pshots
         Ogre.containers = ogres
         Text.containers = sprites
         

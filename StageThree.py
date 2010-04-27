@@ -6,8 +6,14 @@ import pygame
 import random
 from pygame.locals import *
 import os
-from creatures import *
-from weapons import *
+from Assassin import Assassin
+from Shadow import Shadow
+from Tesi import Tesi
+from Hero import Hero
+from Creature import Creature
+from Shot import Shot
+from PowerShot import PowerShot
+from Block import Block
 from main import *
 
 dokill = 1
@@ -125,7 +131,7 @@ def StageThree(hero, winstyle = 0):
         
         #Default groups for each sprite class
         Shot.containers = shots
-        Pshot.containers = pshots
+        PowerShot.containers = pshots
         Shadow.containers = shadows
         
         # Blit everything to the screen

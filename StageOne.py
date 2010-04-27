@@ -6,9 +6,14 @@ import pygame
 import random
 from StageTwo import *
 from pygame.locals import *
-from creatures import *
-from weapons import *
 from main import *
+from Runt import Runt
+from Tesi import Tesi
+from Hero import Hero
+from Creature import Creature
+from Shot import Shot
+from PowerShot import PowerShot
+
 
 dokill = 1
 dontkill = 0
@@ -40,7 +45,7 @@ def StageOne(hero, winstyle = 0):
         runties = pygame.sprite.Group()
         
         Runt([100, 100])
-        prof = SuperSprite("prof", [740, 30], [1, 1], [10], "still", "prof.png", "nil")
+        prof = Creature("prof", [740, 30], [1, 1], [10], "still", "prof.png", "nil")
 
         #Scoreboard
         score = Score()
@@ -83,9 +88,9 @@ def StageOne(hero, winstyle = 0):
         all = pygame.sprite.Group(prof, score, life, text, blood, pshots, blade, claws, runties, shots)
         
         #Default groups for each sprite class
-        SuperSprite.containers = all
+        Creature.containers = all
         Shot.containers = all
-        Pshot.containers = all
+        PowerShot.containers = all
         Runt.containers = all
         Text.containers = all
 
