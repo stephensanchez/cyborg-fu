@@ -50,7 +50,7 @@ def StageOne(hero, winstyle = 0):
         bgdtile = load_image('graytile.png')
         background = pygame.Surface(SCREENRECT.size)
         for x in range(0, SCREENRECT.width, bgdtile.get_width()):
-                for y in range(0, SCREENRECT.height, bgdtile.get_width()):
+                for y in range(0, SCREENRECT.height, bgdtile.get_height()):
                         background.blit(bgdtile, (x, y))
 
         #Missle & Attack object groups must be determined before characters.
@@ -79,13 +79,17 @@ def StageOne(hero, winstyle = 0):
         if hero == "tesi":
                 tesi = Tesi(blade)
                 life = Life(tesi)
+                mana = Mana(tesi)
                 lifesprite = pygame.sprite.RenderPlain(life)
+                manaSprite = pygame.sprite.RenderPlain(mana)
                 heroes = pygame.sprite.Group(tesi)
-                sprites = pygame.sprite.Group(tesi, prof, score, life, text)
+                sprites = pygame.sprite.Group(tesi, prof, score, life, mana, text)
         if hero == "gunner":
                 gunner = Hero(shots)
                 life = Life(gunner)
+                mana = Mana(gunner)
                 lifesprite = pygame.sprite.RenderPlain(life)
+                manaSprite = pygame.sprite.RenderPlain(mana)
                 heroes = pygame.sprite.Group(gunner)
                 sprites = pygame.sprite.Group(gunner, prof, score, life, text)
                 
@@ -102,7 +106,7 @@ def StageOne(hero, winstyle = 0):
         CHECKMARK2 = 0
         CHECKMARK3 = 0
 
-        all = pygame.sprite.Group(prof, score, life, text, blood, pshots, blade, claws, runties, shots)
+        all = pygame.sprite.Group(prof, score, life, mana, text, blood, pshots, blade, claws, runties, shots)
         
         #Default groups for each sprite class
         Creature.containers = all

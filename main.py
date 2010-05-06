@@ -1,27 +1,8 @@
-"""
-Copyright (c) 2010 Stephen Sanchez
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-"""
 #!/usr/bin/env python
 #Main window screen.
+
 from mainmenu import *
+from DisplayObject import load_png
 import os
 
 def main():
@@ -59,15 +40,29 @@ class Life(pygame.sprite.Sprite):
         def __init__(self, char):
                 pygame.sprite.Sprite.__init__(self)
                 self.char = char
-                self.font = pygame.font.Font(None, 20)
-                screen = pygame.display.get_surface()
+                self.maxLife = char.life
+                self.image, self.rect = load_png("health.png")
                 self.update()
                 self.rect = self.image.get_rect().move(50, 550)
 
         def update(self):
-                hero = self.char
-                msg = "Life:     %d        Mana:      %d       " % (hero.life, hero.mana)
-                self.image = self.font.render(msg, 0, (255, 0, 0))
+                screen = pygame.display.get_surface()
+                xScale = float(self.char.life) / float(self.maxLife) * 300
+                self.image = pygame.transform.scale(self.image, (int(xScale), 17))
+
+class Mana(pygame.sprite.Sprite):
+        def __init__(self, char):
+                pygame.sprite.Sprite.__init__(self)
+                self.char = char
+                self.maxMana = 300
+                self.image, self.rect = load_png("mana.png")
+                self.rect = self.image.get_rect().move(50, 570)
+                self.update()
+
+        def update(self):
+                screen = pygame.display.get_surface()
+                xScale = (float(self.char.mana) / float(self.maxMana) * 300) + 1
+                self.image = pygame.transform.scale(self.image, (int(xScale), 17))
 
 class Score(pygame.sprite.Sprite):
         def __init__(self):

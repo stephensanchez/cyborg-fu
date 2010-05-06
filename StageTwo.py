@@ -82,12 +82,14 @@ def StageTwo(hero, winstyle = 0):
         if hero == "tesi":
                 tesi = Tesi(blade)
                 life = Life(tesi)
+                Mana(tesi)
                 lifesprite = pygame.sprite.RenderPlain(life)
                 heroes = pygame.sprite.Group(tesi)
                 sprites = pygame.sprite.Group(tesi, prof, score, life, text)
         if hero == "gunner":
                 gunner = Hero(shots)
                 life = Life(gunner)
+                Mana(gunner)
                 lifesprite = pygame.sprite.RenderPlain(life)
                 heroes = pygame.sprite.Group(gunner)
                 sprites = pygame.sprite.Group(gunner, prof, score, life, text)
