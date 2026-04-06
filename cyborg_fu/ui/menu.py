@@ -32,6 +32,7 @@ def mainmenu() -> str | None:
     clock = pygame.time.Clock()
 
     choice = "sword"
+    selection_shown = False
     messages: list[MenuText] = [
         MenuText("You are a cyborg, programmed by me, the professor.", 20, 30),
         MenuText(
@@ -75,11 +76,12 @@ def mainmenu() -> str | None:
                         return "tesi"
                     return "gunner"
 
-        if len(messages) == 0:
+        if len(messages) == 0 and not selection_shown:
             objects.add(MenuText("Sword", 50, 150))
             objects.add(MenuText("Gun", 50, 170))
             objects.add(MenuText("Use the up and down keys to select, then press enter.", 20, 190))
             objects.add(arrow)
+            selection_shown = True
 
         objects.clear(screen, background)
         objects.update()

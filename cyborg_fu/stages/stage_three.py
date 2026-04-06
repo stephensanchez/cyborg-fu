@@ -53,7 +53,7 @@ def stage_three(  # pylint: disable=too-many-branches,too-many-statements
 ) -> str | None:
     """Run Stage Three. Returns None when finished or quit."""
     screen, screen_rect = create_screen()
-    background = create_image_background("river.png", screen_rect)
+    background = create_image_background("rivers.png", screen_rect)
 
     shots: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
     pshots: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
