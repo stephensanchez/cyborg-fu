@@ -1,12 +1,9 @@
 """Shared utilities for game stages."""
+# pylint: disable=no-member
 from __future__ import annotations
-from typing import TYPE_CHECKING
 import pygame
 from cyborg_fu.assets import load_image
 from cyborg_fu.constants import SCREEN_HEIGHT, SCREEN_WIDTH
-
-if TYPE_CHECKING:
-    pass
 
 
 def create_screen(caption: str = "Cyborg-Fu!") -> tuple[pygame.Surface, pygame.Rect]:

@@ -1,4 +1,5 @@
 """Stage One: Fight the Runts."""
+# pylint: disable=no-name-in-module,no-member
 from __future__ import annotations
 import random
 from dataclasses import dataclass
@@ -31,16 +32,16 @@ class EnemySlot:
     creature: Runt | None = None
 
 
-def stage_one(hero: str) -> str | None:
+def stage_one(hero: str) -> str | None:  # pylint: disable=too-many-branches,too-many-statements
     """Run Stage One. Returns hero type for next stage or None if quit."""
     screen, screen_rect = create_screen()
     background = create_tiled_background("graytile.png", screen_rect)
 
-    shots = pygame.sprite.Group()
-    pshots = pygame.sprite.Group()
-    blade = pygame.sprite.Group()
-    blood = pygame.sprite.Group()
-    runties = pygame.sprite.Group()
+    shots: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    pshots: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    blade: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    blood: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    runties: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
 
     prof = Creature(nature=Nature.PROF, spawn=(740, 30), speed=(1, 1), life=10, graphic="prof.png")
     score = Score()
@@ -49,18 +50,24 @@ def stage_one(hero: str) -> str | None:
     tesi_hero: Tesi | None = None
     gunner_hero: Hero | None = None
 
+    sprites: pygame.sprite.Group[pygame.sprite.Sprite]
+    heroes: pygame.sprite.Group[pygame.sprite.Sprite]
     if hero == "tesi":
         tesi_hero = Tesi(blade)
         life_bar = LifeBar(tesi_hero)
         mana_bar = ManaBar(tesi_hero)  # Bug B5 fix: capture mana_bar
         heroes = pygame.sprite.Group(tesi_hero)
-        sprites = pygame.sprite.Group(tesi_hero, prof, score, life_bar, mana_bar, text)
+        sprites = pygame.sprite.Group(
+            tesi_hero, prof, score, life_bar, mana_bar, text
+        )
     else:
         gunner_hero = Hero(shots)
         life_bar = LifeBar(gunner_hero)
         mana_bar = ManaBar(gunner_hero)  # Bug B5 fix
         heroes = pygame.sprite.Group(gunner_hero)
-        sprites = pygame.sprite.Group(gunner_hero, prof, score, life_bar, mana_bar, text)
+        sprites = pygame.sprite.Group(
+            gunner_hero, prof, score, life_bar, mana_bar, text
+        )
 
     # Bug B2 fix: use independent EnemySlot objects
     slots = [
@@ -211,7 +218,7 @@ def stage_one(hero: str) -> str | None:
                 for slot in slots:
                     slot.alive = False
                     slot.creature = None
-                from cyborg_fu.stages.stage_two import stage_two
+                from cyborg_fu.stages.stage_two import stage_two  # pylint: disable=import-outside-toplevel
                 return stage_two(hero)
 
         # Render

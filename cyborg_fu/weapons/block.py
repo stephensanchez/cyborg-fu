@@ -8,18 +8,22 @@ from cyborg_fu.enums import Direction
 if TYPE_CHECKING:
     from cyborg_fu.creatures.base import Creature
 
+
 class Block(pygame.sprite.Sprite):
+    """Impassable terrain block that pushes sprites back on collision."""
+
     def __init__(self, position: tuple[int, int]) -> None:
         super().__init__()
         self.life: int = 100
         self.position: tuple[int, int] = position
         self.image, self.rect = load_png("block.png")
         screen = pygame.display.get_surface()
-        self.area: pygame.Rect = screen.get_rect()
+        self.area: pygame.Rect = screen.get_rect()  # type: ignore[union-attr]
         self.rect.midtop = self.position
         pygame.event.pump()
 
     def collision(self, sprite: "Creature") -> None:
+        """Push a colliding sprite back based on its facing direction."""
         sprite.movepos = [0, 0]
         if sprite.facing is Direction.LEFT:
             sprite.movepos = [1, 0]

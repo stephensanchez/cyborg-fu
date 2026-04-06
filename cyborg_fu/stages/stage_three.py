@@ -1,13 +1,14 @@
 """Stage Three: Boss Battle against the Assassin."""
+# pylint: disable=no-name-in-module,no-member
 from __future__ import annotations
 import random
-from dataclasses import dataclass, field
+from typing import cast
 import pygame
 from pygame.locals import K_a, K_d, K_e, K_l, K_s, K_SPACE, K_w, KEYDOWN, KEYUP, QUIT
 from cyborg_fu.constants import (
     ASSASSIN_BLADE_DAMAGE, ASSASSIN_PSHOT_DAMAGE, ASSASSIN_SHOT_DAMAGE_GUNNER,
     ASSASSIN_SHOT_DAMAGE_TESI, ASSASSIN_SHOT_HIT_DAMAGE, ASSASSIN_HIT_POINTS,
-    BLADE_COLLIDE_LATENCY, BLADE_DAMAGE, FPS, POWERSHOT_DAMAGE,
+    BLADE_COLLIDE_LATENCY, BLADE_DAMAGE, FPS,
     SHADOW_ODDS, SHADOW_SPAWN, SHOT_DAMAGE, SWING_COLLIDE_LATENCY,
 )
 from cyborg_fu.creatures.assassin import Assassin
@@ -47,20 +48,22 @@ TAUNT_MESSAGES = [
 ]
 
 
-def stage_three(hero: str) -> str | None:
+def stage_three(  # pylint: disable=too-many-branches,too-many-statements
+    hero: str,
+) -> str | None:
     """Run Stage Three. Returns None when finished or quit."""
     screen, screen_rect = create_screen()
     background = create_image_background("river.png", screen_rect)
 
-    shots = pygame.sprite.Group()
-    pshots = pygame.sprite.Group()
-    blade = pygame.sprite.Group()
-    blood = pygame.sprite.Group()
-    assassin_shots = pygame.sprite.Group()
-    shadows = pygame.sprite.Group()
+    shots: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    pshots: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    blade: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    blood: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    assassin_shots: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    shadows: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
 
     # Build block groups
-    all_blocks = pygame.sprite.Group()
+    all_blocks: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
     for pos in MIDDLE_BLOCKS + EAST_BLOCKS + WEST_BLOCKS:
         all_blocks.add(Block(pos))
 
@@ -71,18 +74,21 @@ def stage_three(hero: str) -> str | None:
     tesi_hero: Tesi | None = None
     gunner_hero: Hero | None = None
 
+    sprites: pygame.sprite.Group[pygame.sprite.Sprite]
     if hero == "tesi":
         tesi_hero = Tesi(blade)
         life_bar = LifeBar(tesi_hero)
         mana_bar = ManaBar(tesi_hero)
-        heroes = pygame.sprite.Group(tesi_hero)
-        sprites = pygame.sprite.Group(tesi_hero, assassin, score, life_bar, mana_bar, text)
+        sprites = pygame.sprite.Group(
+            tesi_hero, assassin, score, life_bar, mana_bar, text
+        )
     else:
         gunner_hero = Hero(shots)
         life_bar = LifeBar(gunner_hero)
         mana_bar = ManaBar(gunner_hero)
-        heroes = pygame.sprite.Group(gunner_hero)
-        sprites = pygame.sprite.Group(gunner_hero, assassin, score, life_bar, mana_bar, text)
+        sprites = pygame.sprite.Group(
+            gunner_hero, assassin, score, life_bar, mana_bar, text
+        )
 
     screen.blit(background, (0, 0))
     pygame.display.flip()
@@ -101,8 +107,11 @@ def stage_three(hero: str) -> str | None:
         if shadow_timer <= 0:
             shadow_timer = SHADOW_SPAWN
             if not int(random.random() * SHADOW_ODDS):
+                spawn_pos: tuple[int, int] = (  # type: ignore[assignment]
+                    assassin.rect.x, assassin.rect.y  # type: ignore[union-attr]
+                )
                 new_shadow = Shadow(
-                    spawn=(assassin.rect.x, assassin.rect.y),
+                    spawn=spawn_pos,
                     shot_group=assassin_shots,
                     facing=assassin.facing,
                     running=list(assassin.movepos),
@@ -153,7 +162,7 @@ def stage_three(hero: str) -> str | None:
 
             # Block collisions
             for block in pygame.sprite.spritecollide(tesi_hero, all_blocks, DONTKILL):
-                block.collision(tesi_hero)
+                cast(Block, block).collision(tesi_hero)
 
         # Gunner input/combat
         if hero == "gunner" and gunner_hero is not None:
@@ -188,17 +197,17 @@ def stage_three(hero: str) -> str | None:
 
             # Block collisions
             for block in pygame.sprite.spritecollide(gunner_hero, all_blocks, DONTKILL):
-                block.collision(gunner_hero)
+                cast(Block, block).collision(gunner_hero)
 
         # Assassin AI
         if hero == "tesi" and tesi_hero is not None:
-            assassin.aim(tesi_hero.rect, assassin_shots)
+            assassin.aim(tesi_hero.rect, assassin_shots)  # type: ignore[arg-type]
         elif hero == "gunner" and gunner_hero is not None:
-            assassin.aim(gunner_hero.rect, assassin_shots)
+            assassin.aim(gunner_hero.rect, assassin_shots)  # type: ignore[arg-type]
 
         # Block collision for assassin
         for block in pygame.sprite.spritecollide(assassin, all_blocks, DONTKILL):
-            block.collision(assassin)
+            cast(Block, block).collision(assassin)
 
         # Damage to assassin from player weapons
         if pygame.sprite.spritecollide(assassin, shots, DOKILL):
@@ -219,16 +228,18 @@ def stage_three(hero: str) -> str | None:
             shadows, shots, DONTKILL, DOKILL
         )
         for shadow in hit_shadows:
-            shadow.bleed(blood)
-            shadow.life -= ASSASSIN_SHOT_HIT_DAMAGE
+            shadow_creature = cast(Shadow, shadow)
+            shadow_creature.bleed(blood)
+            shadow_creature.life -= ASSASSIN_SHOT_HIT_DAMAGE
             sprites.add(DialogText(random.choice(TAUNT_MESSAGES)))
 
         hit_shadows_blade = pygame.sprite.groupcollide(
             shadows, blade, DONTKILL, DONTKILL
         )
         for shadow in hit_shadows_blade:
-            shadow.bleed(blood)
-            shadow.life -= ASSASSIN_BLADE_DAMAGE
+            shadow_creature = cast(Shadow, shadow)
+            shadow_creature.bleed(blood)
+            shadow_creature.life -= ASSASSIN_BLADE_DAMAGE
             sprites.add(DialogText(random.choice(TAUNT_MESSAGES)))
 
         # Victory condition

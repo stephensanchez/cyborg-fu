@@ -56,7 +56,9 @@ class LifeBar(pygame.sprite.Sprite):
     def update(self) -> None:
         """Resize the bar proportional to current life."""
         x_scale = float(self.char.life) / float(self.max_life) * 300
-        self.image = pygame.transform.scale(self.image, (max(1, int(x_scale)), 17))
+        self.image = pygame.transform.scale(
+            self.image, (max(1, int(x_scale)), 17)  # type: ignore[arg-type]
+        )
 
 
 class ManaBar(pygame.sprite.Sprite):
@@ -72,4 +74,6 @@ class ManaBar(pygame.sprite.Sprite):
     def update(self) -> None:
         """Resize the bar proportional to current mana."""
         x_scale = (float(self.char.mana) / float(self.max_mana) * 300) + 1
-        self.image = pygame.transform.scale(self.image, (int(x_scale), 17))
+        self.image = pygame.transform.scale(
+            self.image, (int(x_scale), 17)  # type: ignore[arg-type]
+        )

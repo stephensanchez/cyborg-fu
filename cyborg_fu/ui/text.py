@@ -19,6 +19,7 @@ class DialogText(pygame.sprite.Sprite):
         self.rect: pygame.Rect = self.image.get_rect().move(20, 20)
 
     def update(self) -> None:
+        """Decrease life counter, re-render text, and kill when expired."""
         self.life -= 1
         self.image = self.font.render(self.text, False, COLOR_BLACK)
         if self.life <= 0:
@@ -38,5 +39,6 @@ class MenuText(pygame.sprite.Sprite):
         self.rect: pygame.Rect = self.image.get_rect().move(self.loc_x, self.loc_y)
 
     def update(self) -> None:
+        """Re-render and reposition the menu text each frame."""
         self.image = self.font.render(self.text, False, COLOR_GREEN)
         self.rect = self.image.get_rect().move(self.loc_x, self.loc_y)

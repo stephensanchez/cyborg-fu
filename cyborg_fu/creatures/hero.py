@@ -11,7 +11,7 @@ from cyborg_fu.enums import Nature
 class Hero(Creature):
     """Gun-toting hero. Can double-fire and use power shots."""
 
-    def __init__(self, attack_group: pygame.sprite.Group) -> None:
+    def __init__(self, attack_group: pygame.sprite.Group[pygame.sprite.Sprite]) -> None:
         super().__init__(
             nature=Nature.GUNNER,
             spawn=(650, 550),
@@ -19,6 +19,6 @@ class Hero(Creature):
             life=100,
             graphic="hero.png",
         )
-        self.attack: pygame.sprite.Group = attack_group
+        self.attack: pygame.sprite.Group[pygame.sprite.Sprite] = attack_group
         self.mana: int = 0
         self.exp: int = 0

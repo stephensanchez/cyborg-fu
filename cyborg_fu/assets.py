@@ -1,5 +1,5 @@
 """Asset loading utilities for images and sounds."""
-
+# pylint: disable=no-member
 from __future__ import annotations
 
 from pathlib import Path
@@ -19,7 +19,7 @@ def load_png(name: str) -> tuple[pygame.Surface, pygame.Rect]:
     """
     fullname = get_data_dir() / name
     try:
-        image = pygame.image.load(str(fullname))
+        image: pygame.Surface = pygame.image.load(str(fullname))
         if image.get_alpha() is None:
             image = image.convert()
         else:
@@ -27,7 +27,8 @@ def load_png(name: str) -> tuple[pygame.Surface, pygame.Rect]:
     except pygame.error as message:
         print(f"Cannot load image: {fullname}")
         raise SystemExit(f"Cannot load image: {fullname}") from message
-    return image, image.get_rect()
+    rect: pygame.Rect = image.get_rect()
+    return image, rect
 
 
 def load_image(name: str) -> pygame.Surface:
@@ -37,7 +38,7 @@ def load_image(name: str) -> pygame.Surface:
     """
     fullname = get_data_dir() / name
     try:
-        surface = pygame.image.load(str(fullname))
+        surface: pygame.Surface = pygame.image.load(str(fullname))
     except pygame.error as message:
         raise SystemExit(
             f'Could not load image "{fullname}": {pygame.get_error()}'

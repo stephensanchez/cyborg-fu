@@ -1,5 +1,5 @@
 """Base Creature class for all game characters."""
-
+# pylint: disable=import-outside-toplevel
 from __future__ import annotations
 
 import random
@@ -48,22 +48,23 @@ class Creature(pygame.sprite.Sprite):
         self.clubcounter: int = 10
         self.mana: int = DEFAULT_MAX_MANA
         self.healing: int = 0
-        self.attack: pygame.sprite.Group = pygame.sprite.Group()
+        self.attack: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+        self.movepos: list[int] = [0, 0]
 
         self.image, self.rect = load_png(graphic)
         screen = pygame.display.get_surface()
-        self.area = screen.get_rect()
+        self.area: pygame.Rect = screen.get_rect()  # type: ignore[union-attr]
 
         self._reinit()
 
     def _reinit(self) -> None:
         """Reset position and movement state."""
         self.state = State.STILL
-        self.movepos: list[int] = [0, 0]
-        firstpos = self.rect.move(self.spawn)
+        self.movepos = [0, 0]
+        firstpos = self.rect.move(self.spawn)  # type: ignore[union-attr]
         if self.area.contains(firstpos):
             self.rect = firstpos
-        self.original = self.image
+        self.original: pygame.Surface = self.image  # type: ignore[assignment]
 
     def update(self) -> None:
         """Update creature state each frame."""
@@ -80,7 +81,7 @@ class Creature(pygame.sprite.Sprite):
         if self.state is State.STILL:
             self.movepos = [0, 0]
         else:
-            newpos = self.rect.move(self.movepos)
+            newpos = self.rect.move(self.movepos)  # type: ignore[union-attr]
             if self.area.contains(newpos):
                 self.rect = newpos
 
@@ -118,11 +119,12 @@ class Creature(pygame.sprite.Sprite):
         self.facing = facing
         self.image = pygame.transform.rotate(self.original, facing.rotation)
 
-    def bleed(self, bloodgroup: pygame.sprite.Group) -> None:
+    def bleed(self, bloodgroup: pygame.sprite.Group[pygame.sprite.Sprite]) -> None:
         """Spawn a blood effect at this creature's position."""
         from cyborg_fu.effects.blood import Blood  # lazy import to avoid circular deps
 
-        new_blood = Blood(self.rect.center)
+        pos: tuple[int, int] = self.rect.center  # type: ignore[union-attr,assignment]
+        new_blood = Blood(pos)
         bloodgroup.add(new_blood)
 
     def knockback(self) -> None:
@@ -141,71 +143,72 @@ class Creature(pygame.sprite.Sprite):
             self.movepos[0] -= KNOCKBACK_FORCE
         elif opposite is Direction.RIGHT:
             self.movepos[0] += KNOCKBACK_FORCE
-        self.rect = self.rect.move(self.movepos)
+        self.rect = self.rect.move(self.movepos)  # type: ignore[union-attr]
 
     def _off_wall(self) -> None:
         """Reverse movement if the creature hits a wall boundary."""
         if (
-            self.rect.left < self.area.left + WALL_MARGIN
-            or self.rect.right > self.area.right - WALL_MARGIN
+            self.rect.left < self.area.left + WALL_MARGIN  # type: ignore[union-attr]
+            or self.rect.right > self.area.right - WALL_MARGIN  # type: ignore[union-attr]
         ):
             self.movepos[0] = -self.movepos[0]
         elif (
-            self.rect.top < self.area.top + WALL_MARGIN
-            or self.rect.bottom > self.area.bottom - WALL_MARGIN
+            self.rect.top < self.area.top + WALL_MARGIN  # type: ignore[union-attr]
+            or self.rect.bottom > self.area.bottom - WALL_MARGIN  # type: ignore[union-attr]
         ):
             self.movepos[1] = -self.movepos[1]
 
     def aim(
-        self, target_rect: pygame.Rect, shot_group: pygame.sprite.Group
+        self, target_rect: pygame.Rect, shot_group: pygame.sprite.Group[pygame.sprite.Sprite]
     ) -> None:
         """AI: aim at target and fire periodically."""
-        xdiff = target_rect[0] - self.rect[0]
-        ydiff = target_rect[1] - self.rect[1]
+        xdiff = target_rect[0] - self.rect[0]  # type: ignore[index]
+        ydiff = target_rect[1] - self.rect[1]  # type: ignore[index]
         self.shotcounter -= 1
         if self.shotcounter == 0:
             self.shotcounter = 5
             if int(random.random() * 100):
                 choice = random.choice((1, 2, 3))
                 if choice == 1:
-                    if xdiff < 30 and ydiff < 30 and ydiff > -30:
+                    if xdiff < 30 and -30 < ydiff < 30:
                         self.moveleft()
                         self._fire(shot_group)
-                    if xdiff > -30 and ydiff < 30 and ydiff > -30:
+                    if xdiff > -30 and -30 < ydiff < 30:
                         self.moveright()
                         self._fire(shot_group)
-                    if ydiff < 30 and xdiff < 30 and xdiff > -30:
+                    if ydiff < 30 and -30 < xdiff < 30:
                         self.moveup()
                         self._fire(shot_group)
-                    if ydiff > -30 and xdiff < 30 and xdiff > -30:
+                    if ydiff > -30 and -30 < xdiff < 30:
                         self.movedown()
                         self._fire(shot_group)
 
     def tryclub(
-        self, target_rect: pygame.Rect, club_group: pygame.sprite.Group
+        self, target_rect: pygame.Rect, club_group: pygame.sprite.Group[pygame.sprite.Sprite]
     ) -> None:
         """AI: swing club at target if close enough."""
-        xdiff = target_rect[0] - self.rect[0]
-        ydiff = target_rect[1] - self.rect[1]
+        xdiff = target_rect[0] - self.rect[0]  # type: ignore[index]
+        ydiff = target_rect[1] - self.rect[1]  # type: ignore[index]
         self.clubcounter -= 1
         if self.clubcounter == 0:
             self.clubcounter = 10
             if int(random.random() * 100):
-                if xdiff < 65 and xdiff > -65 and ydiff < 65 and ydiff > -65:
+                if -65 < xdiff < 65 and -65 < ydiff < 65:
                     self._swing_club(club_group)
 
-    def _swing_club(self, club_group: pygame.sprite.Group) -> None:
+    def _swing_club(self, club_group: pygame.sprite.Group[pygame.sprite.Sprite]) -> None:
         """Spawn a club weapon sprite."""
         from cyborg_fu.weapons.club import Club  # lazy import
 
         self.state = State.STILL
-        new_club = Club(self.rect.center, self.facing)
+        center: tuple[int, int] = self.rect.center  # type: ignore[union-attr,assignment]
+        new_club = Club(center, self.facing)
         club_group.add(new_club)
 
     def chase(self, target_rect: pygame.Rect) -> None:
         """AI: move toward target position."""
-        xdiff = target_rect[0] - self.rect[0]
-        ydiff = target_rect[1] - self.rect[1]
+        xdiff = target_rect[0] - self.rect[0]  # type: ignore[index]
+        ydiff = target_rect[1] - self.rect[1]  # type: ignore[index]
         self.counter -= 1
         if self.counter == 0:
             self.counter = 10
@@ -256,29 +259,32 @@ class Creature(pygame.sprite.Sprite):
                 else:
                     self.state = State.STILL
 
-    def swing(self, bladegroup: pygame.sprite.Group) -> None:
+    def swing(self, bladegroup: pygame.sprite.Group[pygame.sprite.Sprite]) -> None:
         """Swing a blade weapon."""
         from cyborg_fu.weapons.blade import Blade  # lazy import
 
         self.state = State.STILL
-        new_blade = Blade(self.rect.center, self.facing)
+        center: tuple[int, int] = self.rect.center  # type: ignore[union-attr,assignment]
+        new_blade = Blade(center, self.facing)
         bladegroup.add(new_blade)
 
-    def throw(self, bladegroup: pygame.sprite.Group) -> None:
+    def throw(self, bladegroup: pygame.sprite.Group[pygame.sprite.Sprite]) -> None:
         """Throw a blade weapon."""
         from cyborg_fu.weapons.thrown_blade import ThrownBlade  # lazy import
 
-        new_thrown = ThrownBlade(self.rect.midtop, self.facing)
+        midtop: tuple[int, int] = self.rect.midtop  # type: ignore[union-attr,assignment]
+        new_thrown = ThrownBlade(midtop, self.facing)
         bladegroup.add(new_thrown)
 
-    def _fire(self, shotgroup: pygame.sprite.Group) -> None:
+    def _fire(self, shotgroup: pygame.sprite.Group[pygame.sprite.Sprite]) -> None:
         """Fire a single shot."""
         from cyborg_fu.weapons.shot import Shot  # lazy import
 
-        new_shot = Shot(self.rect.midtop, self.facing)
+        midtop: tuple[int, int] = self.rect.midtop  # type: ignore[union-attr,assignment]
+        new_shot = Shot(midtop, self.facing)
         shotgroup.add(new_shot)
 
-    def doublefire(self, shotgroup: pygame.sprite.Group) -> None:
+    def doublefire(self, shotgroup: pygame.sprite.Group[pygame.sprite.Sprite]) -> None:
         """Fire two shots side-by-side.
 
         BUG B6 FIX: Original used two independent `if` blocks, leaving
@@ -287,27 +293,34 @@ class Creature(pygame.sprite.Sprite):
         from cyborg_fu.weapons.shot import Shot  # lazy import
 
         if self.facing in (Direction.RIGHT, Direction.LEFT):
-            first_shot = Shot(self.rect.midtop, self.facing)
-            second_shot = Shot(self.rect.midbottom, self.facing)
+            midtop1: tuple[int, int] = self.rect.midtop  # type: ignore[union-attr,assignment]
+            midbottom1: tuple[int, int] = self.rect.midbottom  # type: ignore[union-attr,assignment]
+            first_shot = Shot(midtop1, self.facing)
+            second_shot = Shot(midbottom1, self.facing)
         else:
             # UP or DOWN
-            first_shot = Shot(self.rect.midleft, self.facing)
-            second_shot = Shot(self.rect.midright, self.facing)
+            midleft1: tuple[int, int] = self.rect.midleft  # type: ignore[union-attr,assignment]
+            midright1: tuple[int, int] = self.rect.midright  # type: ignore[union-attr,assignment]
+            first_shot = Shot(midleft1, self.facing)
+            second_shot = Shot(midright1, self.facing)
         shotgroup.add(first_shot)
         shotgroup.add(second_shot)
 
-    def powershot(self, shotgroup: pygame.sprite.Group) -> None:
+    def powershot(self, shotgroup: pygame.sprite.Group[pygame.sprite.Sprite]) -> None:
         """Fire a powerful double shot if enough mana is available."""
         from cyborg_fu.weapons.power_shot import PowerShot  # lazy import
 
         if self.mana > POWERSHOT_MANA_COST - 1:
             self.mana -= POWERSHOT_MANA_COST
+            assert self.rect is not None
             if self.facing in (Direction.RIGHT, Direction.LEFT):
-                first_shot = PowerShot(self.rect.midtop, self.facing)
-                second_shot = PowerShot(self.rect.midbottom, self.facing)
+                pos_a: tuple[int, int] = self.rect.midtop  # type: ignore[assignment]
+                pos_b: tuple[int, int] = self.rect.midbottom  # type: ignore[assignment]
             else:
-                first_shot = PowerShot(self.rect.midleft, self.facing)
-                second_shot = PowerShot(self.rect.midright, self.facing)
+                pos_a = self.rect.midleft  # type: ignore[assignment]
+                pos_b = self.rect.midright  # type: ignore[assignment]
+            first_shot = PowerShot(pos_a, self.facing)
+            second_shot = PowerShot(pos_b, self.facing)
             shotgroup.add(first_shot)
             shotgroup.add(second_shot)
 
@@ -320,11 +333,13 @@ class Creature(pygame.sprite.Sprite):
     def heal(self) -> None:
         """Heal life using mana (Tesi ability)."""
         screen = pygame.display.get_surface()
-        pos = self.rect.center
+        pos: tuple[int, int] = self.rect.center  # type: ignore[union-attr,assignment]
         color = random.choice((COLOR_HEAL_GREEN, COLOR_HEAL_BLUE))
         if self.healing == 1:
             if self.mana > HEAL_MANA_COST - 1 and self.life < DEFAULT_MAX_LIFE:
                 self.state = State.STILL
                 self.mana -= HEAL_MANA_COST
                 self.life += HEAL_LIFE_GAIN
-                pygame.draw.circle(screen, color, pos, HEAL_RADIUS, HEAL_CIRCLE_WIDTH)
+                pygame.draw.circle(
+                    screen, color, pos, HEAL_RADIUS, HEAL_CIRCLE_WIDTH  # type: ignore[arg-type]
+                )

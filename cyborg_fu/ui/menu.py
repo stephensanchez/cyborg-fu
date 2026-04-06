@@ -1,5 +1,5 @@
 """Main menu screen with hero selection."""
-
+# pylint: disable=no-name-in-module,no-member
 from __future__ import annotations
 
 import pygame
@@ -34,10 +34,22 @@ def mainmenu() -> str | None:
     choice = "sword"
     messages: list[MenuText] = [
         MenuText("You are a cyborg, programmed by me, the professor.", 20, 30),
-        MenuText("My work is complete, it is time to test you against some nasty little critters...", 20, 50),
-        MenuText("To move, use the W, A, S, and D keys.  Your basic attack can be used by the spacebar during battle.", 20, 70),
-        MenuText("For each stage I present you, try and gain twenty points, then come speak to me, I will advance you.", 20, 90),
-        MenuText("Press E through Y for possible special abilities, they will use your mana!", 20, 110),
+        MenuText(
+            "My work is complete, it is time to test you against some nasty little critters...",
+            20, 50,
+        ),
+        MenuText(
+            "To move, use the W, A, S, and D keys.  Your basic attack can be used by the spacebar.",
+            20, 70,
+        ),
+        MenuText(
+            "For each stage I present you, try and gain twenty points, then come speak to me.",
+            20, 90,
+        ),
+        MenuText(
+            "Press E through Y for possible special abilities, they will use your mana!",
+            20, 110,
+        ),
         MenuText("Which weapon do you prefer for battle?", 20, 130),
     ]
 

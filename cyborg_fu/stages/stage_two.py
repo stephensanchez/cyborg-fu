@@ -1,4 +1,5 @@
 """Stage Two: Fight the Ogres."""
+# pylint: disable=no-name-in-module,no-member
 from __future__ import annotations
 import random
 from dataclasses import dataclass
@@ -7,8 +8,7 @@ from pygame.locals import K_a, K_d, K_e, K_l, K_s, K_SPACE, K_w, KEYDOWN, KEYUP,
 from cyborg_fu.constants import (
     BLADE_COLLIDE_LATENCY, BLADE_DAMAGE, FPS, OGRE_CLUB_DAMAGE_GUNNER,
     OGRE_CLUB_DAMAGE_TESI, OGRE_KILL_POINTS, OGRE_ODDS, OGRE_RELOAD,
-    POWERSHOT_DAMAGE, RUNT_CONTACT_DAMAGE_GUNNER, RUNT_CONTACT_DAMAGE_TESI,
-    SHOT_DAMAGE, STAGE_ADVANCE_SCORE, SWING_COLLIDE_LATENCY,
+    POWERSHOT_DAMAGE, SHOT_DAMAGE, STAGE_ADVANCE_SCORE, SWING_COLLIDE_LATENCY,
 )
 from cyborg_fu.creatures.hero import Hero
 from cyborg_fu.creatures.ogre import Ogre
@@ -31,17 +31,19 @@ class OgreSlot:
     creature: Ogre | None = None
 
 
-def stage_two(hero: str) -> str | None:
+def stage_two(  # pylint: disable=too-many-branches,too-many-statements,too-many-nested-blocks
+    hero: str,
+) -> str | None:
     """Run Stage Two. Returns hero type for next stage or None if quit."""
     screen, screen_rect = create_screen()
     background = create_tiled_background("graytile.png", screen_rect)
 
-    shots = pygame.sprite.Group()
-    pshots = pygame.sprite.Group()
-    blade = pygame.sprite.Group()
-    blood = pygame.sprite.Group()
-    clubs = pygame.sprite.Group()
-    ogres = pygame.sprite.Group()
+    shots: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    pshots: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    blade: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    blood: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    clubs: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
+    ogres: pygame.sprite.Group[pygame.sprite.Sprite] = pygame.sprite.Group()
 
     score = Score()
     text = DialogText("Professor: These runts are much stronger!")
@@ -49,18 +51,21 @@ def stage_two(hero: str) -> str | None:
     tesi_hero: Tesi | None = None
     gunner_hero: Hero | None = None
 
+    sprites: pygame.sprite.Group[pygame.sprite.Sprite]
     if hero == "tesi":
         tesi_hero = Tesi(blade)
         life_bar = LifeBar(tesi_hero)
         mana_bar = ManaBar(tesi_hero)
-        heroes = pygame.sprite.Group(tesi_hero)
-        sprites = pygame.sprite.Group(tesi_hero, score, life_bar, mana_bar, text)
+        sprites = pygame.sprite.Group(
+            tesi_hero, score, life_bar, mana_bar, text
+        )
     else:
         gunner_hero = Hero(shots)
         life_bar = LifeBar(gunner_hero)
         mana_bar = ManaBar(gunner_hero)
-        heroes = pygame.sprite.Group(gunner_hero)
-        sprites = pygame.sprite.Group(gunner_hero, score, life_bar, mana_bar, text)
+        sprites = pygame.sprite.Group(
+            gunner_hero, score, life_bar, mana_bar, text
+        )
 
     slots = [
         OgreSlot(spawn=(100, 50)),
@@ -179,11 +184,11 @@ def stage_two(hero: str) -> str | None:
 
                 # Ogre chases and tries to club hero
                 if hero == "tesi" and tesi_hero is not None:
-                    ogre.chase(tesi_hero.rect)
-                    ogre.tryclub(tesi_hero.rect, clubs)
+                    ogre.chase(tesi_hero.rect)  # type: ignore[arg-type]
+                    ogre.tryclub(tesi_hero.rect, clubs)  # type: ignore[arg-type]
                 elif hero == "gunner" and gunner_hero is not None:
-                    ogre.chase(gunner_hero.rect)
-                    ogre.tryclub(gunner_hero.rect, clubs)
+                    ogre.chase(gunner_hero.rect)  # type: ignore[arg-type]
+                    ogre.tryclub(gunner_hero.rect, clubs)  # type: ignore[arg-type]
 
                 if pygame.sprite.spritecollide(ogre, shots, DOKILL):
                     ogre.bleed(blood)
@@ -212,7 +217,7 @@ def stage_two(hero: str) -> str | None:
             for slot in slots:
                 slot.alive = False
                 slot.creature = None
-            from cyborg_fu.stages.stage_three import stage_three
+            from cyborg_fu.stages.stage_three import stage_three  # pylint: disable=import-outside-toplevel
             return stage_three(hero)
 
         # Render

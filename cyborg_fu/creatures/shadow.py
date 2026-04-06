@@ -14,7 +14,7 @@ class Shadow(Creature):
     def __init__(
         self,
         spawn: tuple[int, int],
-        shot_group: pygame.sprite.Group,
+        shot_group: pygame.sprite.Group[pygame.sprite.Sprite],
         facing: Direction,
         running: list[int],
     ) -> None:
@@ -29,4 +29,4 @@ class Shadow(Creature):
         self.movepos = running
         self.counter: int = 50
         self.shotcounter: int = 50
-        self.attack: pygame.sprite.Group = shot_group
+        self.attack: pygame.sprite.Group[pygame.sprite.Sprite] = shot_group

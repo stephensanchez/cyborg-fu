@@ -11,7 +11,9 @@ from cyborg_fu.enums import Nature
 class Ogre(Creature):
     """Big, slow, strong enemy. Chases player and swings a club."""
 
-    def __init__(self, spawn: tuple[int, int], club_group: pygame.sprite.Group) -> None:
+    def __init__(
+        self, spawn: tuple[int, int], club_group: pygame.sprite.Group[pygame.sprite.Sprite]
+    ) -> None:
         super().__init__(
             nature=Nature.OGRE,
             spawn=spawn,
@@ -21,4 +23,4 @@ class Ogre(Creature):
         )
         self.counter: int = 10
         self.clubcounter: int = 5
-        self.attack: pygame.sprite.Group = club_group
+        self.attack: pygame.sprite.Group[pygame.sprite.Sprite] = club_group
