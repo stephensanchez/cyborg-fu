@@ -32,6 +32,8 @@ def mock_pygame() -> Any:
     mock_rect.midright = (130, 115)
     mock_image.get_rect.return_value = mock_rect
     mock_image.get_alpha.return_value = None
+    mock_image.convert.return_value = mock_image
+    mock_image.convert_alpha.return_value = mock_image
 
     with (
         patch("pygame.init"),
